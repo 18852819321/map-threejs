@@ -11,10 +11,12 @@ import {
 } from "./typed";
 import { ProjectionFnParamType } from ".";
 
+const arr = ['江苏省', '上海市', '广东省', '云南省', '陕西省', '江西省', '吉林省', '内蒙古自治区', '西藏自治区']
 // 绘制挤出的材质
 export function drawExtrudeMesh(
   point: [number, number][],
-  projectionFn: any
+  projectionFn: any,
+  name: string,
 ): any {
   const shape = new THREE.Shape();
 
@@ -32,7 +34,7 @@ export function drawExtrudeMesh(
   });
 
   const material = new THREE.MeshPhongMaterial({
-    color: "#06092A",
+    color: arr.includes(name) ? "#0284ff" : "#06092A",
     transparent: true,
     opacity: 0.9,
   });
@@ -96,6 +98,8 @@ export function generateMapObject3D(
   basicFeatures.forEach((basicFeatureItem: GeoJsonFeature) => {
     // 每个省份的地图对象
     const provinceMapObject3D = new THREE.Object3D() as ExtendObject3D;
+
+    // console.log(provinceMapObject3D.);
     // 将地图数据挂在到模型数据上
     provinceMapObject3D.customProperties = basicFeatureItem.properties;
 
@@ -122,7 +126,7 @@ export function generateMapObject3D(
     if (featureType === "MultiPolygon") {
       featureCoords.forEach((multiPolygon: [number, number][][]) => {
         multiPolygon.forEach((polygon: [number, number][]) => {
-          const { mesh } = drawExtrudeMesh(polygon, projectionFn);
+          const { mesh } = drawExtrudeMesh(polygon, projectionFn, basicFeatureItem.properties.name);
           provinceMapObject3D.add(mesh);
         });
       });
@@ -131,7 +135,7 @@ export function generateMapObject3D(
     // Polygon 类型
     if (featureType === "Polygon") {
       featureCoords.forEach((polygon: [number, number][]) => {
-        const { mesh } = drawExtrudeMesh(polygon, projectionFn);
+        const { mesh } = drawExtrudeMesh(polygon, projectionFn, basicFeatureItem.properties.name);
         provinceMapObject3D.add(mesh);
       });
     }

@@ -30,6 +30,8 @@ interface Props {
 
 let lastPick: any = null;
 
+const arr = ['江苏省', '上海市', '广东省', '云南省', '陕西省', '江西省', '吉林省', '内蒙古自治区', '西藏自治区']
+
 function Map3D(props: Props) {
   const { geoJson, dblClickFn, projectionFnParam } = props;
   const mapRef = useRef<any>();
@@ -119,12 +121,14 @@ function Map3D(props: Props) {
     const spotObject3D = new THREE.Object3D();
     const spotList: any = [];
     label2dData.forEach((item: any) => {
-      const { featureCenterCoord } = item;
-      const spotObjectItem = drawSpot(featureCenterCoord);
-      if (spotObjectItem && spotObjectItem.circle && spotObjectItem.ring) {
-        spotObject3D.add(spotObjectItem.circle);
-        spotObject3D.add(spotObjectItem.ring);
-        spotList.push(spotObjectItem.ring);
+      if (arr.includes(item.featureName)) {
+        const { featureCenterCoord } = item;
+        const spotObjectItem = drawSpot(featureCenterCoord);
+        if (spotObjectItem && spotObjectItem.circle && spotObjectItem.ring) {
+          spotObject3D.add(spotObjectItem.circle);
+          spotObject3D.add(spotObjectItem.ring);
+          spotList.push(spotObjectItem.ring);
+        }
       }
     });
     scene.add(spotObject3D);
@@ -132,34 +136,34 @@ function Map3D(props: Props) {
     /**
      * 绘制连线（随机生成两个点位）
      */
-    const MAX_LINE_COUNT = 5; // 随机生成5组线
-    let connectLine: any[] = [];
-    for (let count = 0; count < MAX_LINE_COUNT; count++) {
-      const midIndex = Math.floor(label2dData.length / 2);
-      const indexStart = Math.floor(Math.random() * midIndex);
-      const indexEnd = Math.floor(Math.random() * midIndex) + midIndex - 1;
-      connectLine.push({
-        indexStart,
-        indexEnd,
-      });
-    }
+    // const MAX_LINE_COUNT = 5; // 随机生成5组线
+    // let connectLine: any[] = [];
+    // for (let count = 0; count < MAX_LINE_COUNT; count++) {
+    //   const midIndex = Math.floor(label2dData.length / 2);
+    //   const indexStart = Math.floor(Math.random() * midIndex);
+    //   const indexEnd = Math.floor(Math.random() * midIndex) + midIndex - 1;
+    //   connectLine.push({
+    //     indexStart,
+    //     indexEnd,
+    //   });
+    // }
 
     /**
      * 绘制飞行的点
      */
-    const flyObject3D = new THREE.Object3D();
-    const flySpotList: any = [];
-    connectLine.forEach((item: any) => {
-      const { indexStart, indexEnd } = item;
-      const { flyLine, flySpot } = drawLineBetween2Spot(
-        label2dData[indexStart].featureCenterCoord,
-        label2dData[indexEnd].featureCenterCoord
-      );
-      flyObject3D.add(flyLine);
-      flyObject3D.add(flySpot);
-      flySpotList.push(flySpot);
-    });
-    scene.add(flyObject3D);
+    // const flyObject3D = new THREE.Object3D();
+    // const flySpotList: any = [];
+    // connectLine.forEach((item: any) => {
+    //   const { indexStart, indexEnd } = item;
+    //   const { flyLine, flySpot } = drawLineBetween2Spot(
+    //     label2dData[indexStart].featureCenterCoord,
+    //     label2dData[indexEnd].featureCenterCoord
+    //   );
+    //   flyObject3D.add(flyLine);
+    //   flyObject3D.add(flySpot);
+    //   flySpotList.push(flySpot);
+    // });
+    // scene.add(flyObject3D);
 
     /**
      * 绘制雷达
@@ -225,7 +229,7 @@ function Map3D(props: Props) {
 
       // 如果存在，则鼠标移出需要重置
       if (lastPick) {
-        lastPick.object.material[0].color.set("#06092A");
+        lastPick.object.material[0].color.set(arr.includes(lastPick.object.parent.customProperties.name) ? "#0284ff" : "#06092A");
       }
       lastPick = null;
       // lastPick = intersects.find(
@@ -239,7 +243,8 @@ function Map3D(props: Props) {
       if (lastPick) {
         const properties = lastPick.object.parent.customProperties;
         if (lastPick.object.material[0]) {
-          lastPick.object.material[0].color.set("#0284ff");
+          // 鼠标移入时的颜色
+          lastPick.object.material[0].color.set("#DBDBDB");
         }
 
         if (toolTipRef.current && toolTipRef.current.style) {
@@ -274,7 +279,7 @@ function Map3D(props: Props) {
     gsap.to(mapObject3D.scale, { x: 2, y: 2, z: 1, duration: 1 });
     gsap.to(labelObject2D.scale, { x: 2, y: 2, z: 1, duration: 1 });
     gsap.to(spotObject3D.scale, { x: 2, y: 2, z: 1, duration: 1 });
-    gsap.to(flyObject3D.scale, { x: 2, y: 2, z: 1, duration: 1 });
+    // gsap.to(flyObject3D.scale, { x: 2, y: 2, z: 1, duration: 1 });
 
     const animate = function () {
       // 雷达
@@ -298,13 +303,13 @@ function Map3D(props: Props) {
       });
 
       // 飞行的圆点
-      flySpotList.forEach(function (mesh: any) {
-        mesh._s += 0.003;
-        let tankPosition = new THREE.Vector3();
-        // getPointAt() 根据弧长在曲线上的位置。必须在范围[0，1]内。
-        tankPosition = mesh.curve.getPointAt(mesh._s % 1);
-        mesh.position.set(tankPosition.x, tankPosition.y, tankPosition.z);
-      });
+      // flySpotList.forEach(function (mesh: any) {
+      //   mesh._s += 0.003;
+      //   let tankPosition = new THREE.Vector3();
+      //   // getPointAt() 根据弧长在曲线上的位置。必须在范围[0，1]内。
+      //   tankPosition = mesh.curve.getPointAt(mesh._s % 1);
+      //   mesh.position.set(tankPosition.x, tankPosition.y, tankPosition.z);
+      // });
     };
     animate();
 

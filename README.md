@@ -4,6 +4,12 @@
 
 ![3dmap](/demo/3dmap.gif)
 
+## 环境
+
+```bash
+node >= 16
+```
+
 ## 运行
 
 ```bash
