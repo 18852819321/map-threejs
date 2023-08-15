@@ -6,6 +6,7 @@ import './map3d/index.css';
 
 // 地图放大倍率
 const MapScale: any = {
+  country: 55,
   province: 100,
   city: 200,
   district: 300,
@@ -35,6 +36,7 @@ function App() {
 
   // 双击事件
   const dblClickFn = (customProperties: any) => {
+    console.log(customProperties)
     setMapAdCode(customProperties.adcode);
     setProjectionFnParam({
       center: customProperties.centroid,

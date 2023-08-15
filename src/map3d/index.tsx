@@ -17,6 +17,7 @@ import {
 } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { drawRadar, radarData, RadarOption } from "./radar";
 import './index.css';
+import backIcon from '../assets/back.svg';
 
 export type ProjectionFnParamType = {
   center: [number, number];
@@ -332,6 +333,9 @@ camera.lookAt(0, 0, 0);
 
   return (
     <div className="map">
+      {projectionFnParam.scale !== 55 && <div className="back" onClick={() => dblClickFn({adcode: 100000, centroid: [107.0, 35.5],level: 'country' })}>
+        <img className="icon" src={backIcon} alt="" />
+      </div>}
       <div ref={map2dRef} />
       <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
       <ToolTip innterRef={toolTipRef} data={toolTipData}></ToolTip>
