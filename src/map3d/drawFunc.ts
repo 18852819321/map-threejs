@@ -34,7 +34,7 @@ export function drawExtrudeMesh(
   });
 
   const material = new THREE.MeshPhongMaterial({
-    color: arr.includes(name) ? "#0284ff" : "#06092A",
+    color: arr.includes(name) ? "#0cc5ae" : "#000",
     transparent: true,
     opacity: 0.9,
   });
@@ -42,10 +42,10 @@ export function drawExtrudeMesh(
   const materialSide = new THREE.ShaderMaterial({
     uniforms: {
       color1: {
-        value: new THREE.Color("#3F9FF3"),
+        value: new THREE.Color("#001524"),
       },
       color2: {
-        value: new THREE.Color("#266BF0"),
+        value: new THREE.Color("#001524"),
       },
     },
     vertexShader: `
@@ -152,6 +152,7 @@ export const draw2dLabel = (coord: [number, number], proviceName: string) => {
     const labelDiv = document.createElement("div");
     labelDiv.innerText = proviceName;
     labelDiv.style.color = "#fff";
+    labelDiv.style.fontSize = "10px";
     const labelObject = new CSS2DObject(labelDiv);
     labelObject.position.set(coord[0], -coord[1], 0);
     return labelObject;

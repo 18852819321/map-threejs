@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import ToolTip from "../tooltip";
@@ -16,6 +16,7 @@ import {
   CSS2DObject,
 } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { drawRadar, radarData, RadarOption } from "./radar";
+import './index.css';
 
 export type ProjectionFnParamType = {
   center: [number, number];
@@ -65,10 +66,14 @@ function Map3D(props: Props) {
     );
     camera.position.set(-10, -90, 130);
 
+// 设置相机的朝向
+camera.lookAt(0, 0, 0);
+
     /**
      * 初始化渲染器
      */
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setClearColor("#DBDBDB");
     renderer.setSize(currentDom.clientWidth, currentDom.clientHeight);
     // 防止开发时重复渲染
     // if (!currentDom.hasChildNodes()) {
@@ -168,22 +173,22 @@ function Map3D(props: Props) {
     /**
      * 绘制雷达
      */
-    radarData.forEach((item: RadarOption) => {
-      const planeMesh = drawRadar(item, ratio);
-      scene.add(planeMesh);
-    });
+    // radarData.forEach((item: RadarOption) => {
+    //   const planeMesh = drawRadar(item, ratio);
+    //   scene.add(planeMesh);
+    // });
 
     /**
      * 初始化 CameraHelper
      */
-    const helper = new THREE.CameraHelper(camera);
-    scene.add(helper);
+    // const helper = new THREE.CameraHelper(camera);
+    // scene.add(helper);
 
     /**
-     * 初始化 AxesHelper
+     * 初始化 AxesHelper坐标轴指示器
      */
-    const axesHelper = new THREE.AxesHelper(100);
-    scene.add(axesHelper);
+    // const axesHelper = new THREE.AxesHelper(100);
+    // scene.add(axesHelper);
 
     /**
      * 初始化控制器
@@ -229,7 +234,7 @@ function Map3D(props: Props) {
 
       // 如果存在，则鼠标移出需要重置
       if (lastPick) {
-        lastPick.object.material[0].color.set(arr.includes(lastPick.object.parent.customProperties.name) ? "#0284ff" : "#06092A");
+        lastPick.object.material[0].color.set(arr.includes(lastPick.object.parent.customProperties.name) ? "#0cc5ae" : "#000");
       }
       lastPick = null;
       // lastPick = intersects.find(
@@ -317,6 +322,7 @@ function Map3D(props: Props) {
     window.addEventListener("mousemove", onMouseMoveEvent, false);
     window.addEventListener("dblclick", onDblclickEvent, false);
 
+
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMoveEvent);
@@ -325,14 +331,7 @@ function Map3D(props: Props) {
   }, [geoJson]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
+    <div className="map">
       <div ref={map2dRef} />
       <div ref={mapRef} style={{ width: "100%", height: "100%" }}></div>
       <ToolTip innterRef={toolTipRef} data={toolTipData}></ToolTip>

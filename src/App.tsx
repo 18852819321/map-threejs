@@ -2,6 +2,7 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import Map3D, { ProjectionFnParamType } from "./map3d";
 import { GeoJsonType } from "./map3d/typed";
+import './map3d/index.css';
 
 // 地图放大倍率
 const MapScale: any = {
@@ -15,8 +16,8 @@ function App() {
   const [mapAdCode, setMapAdCode] = useState<number>(100000);
   const [projectionFnParam, setProjectionFnParam] =
     useState<ProjectionFnParamType>({
-      center: [104.0, 37.5],
-      scale: 40,
+      center: [107.0, 35.5],
+      scale: 55,
     });
 
   useEffect(() => {

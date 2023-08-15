@@ -1,3 +1,4 @@
+import './index.css';
 function ToolTip(props: any) {
   const { innterRef, data } = props;
   const { text } = data;
@@ -8,14 +9,16 @@ function ToolTip(props: any) {
       style={{
         position: "absolute",
         zIndex: 999,
-        background: "#010209",
+        background: "#fff",
         width: "350px",
         height: "200px",
         padding: "10px",
-        border: "2px solid #163FA2",
+        // border: "2px solid #0cc5ae",
+        borderRadius: "12px",
         visibility: "hidden",
-        color: "#3B93E6",
+        color: "#0cc5ae",
       }}
+      className='card'
     >
       {text || "this is ToolTip"}
     </div>
